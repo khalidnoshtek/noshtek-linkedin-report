@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///C:/Users/xdrkz/Downloads/noshtek_final_report_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noshtek — Analytics Dashboard</title>
+<link href="./Noshtek — Analytics Dashboard_files/css2" rel="stylesheet">
+<script src="./Noshtek — Analytics Dashboard_files/chart.umd.js.download"></script>
+<script src="./Noshtek — Analytics Dashboard_files/xlsx.full.min.js.download"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B2A;--nmid:#1B2E45;--nlt:#243C57;
+  --gold:#E8A020;--goldl:#F2B84B;
+  --teal:#1ABCAD;--teald:rgba(26,188,173,0.15);
+  --red:#E05C5C;--green:#3DBF8E;--orange:#E37400;
+  --txt:#EDF2F7;--muted:#8899AA;--dim:#4E6070;
+  --bdr:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--cardh:rgba(255,255,255,0.08);
+  --lib:#0A66C2;--gab:#E37400;
+}
+html{font-size:15px}
+body{font-family:'Sora',sans-serif;background:var(--navy);color:var(--txt);line-height:1.6;min-height:100vh}
+.wrap{max-width:1120px;margin:0 auto;padding:0 1.8rem 4rem}
+
+/* ── TOP NAV ── */
+.topnav{
+  border-bottom:1px solid var(--bdr);
+  position:sticky;top:0;
+  background:var(--navy);z-index:50;
+}
+.nav-inner{
+  max-width:1120px;margin:0 auto;
+  padding:0 1.8rem;
+  display:flex;align-items:stretch;justify-content:space-between;
+}
+.main-tabs{display:flex;gap:0}
+.mtab{
+  display:flex;align-items:center;gap:9px;
+  padding:1rem 1.8rem;
+  border:none;border-bottom:3px solid transparent;
+  background:transparent;color:var(--muted);
+  font-size:.85rem;font-weight:600;font-family:'Sora',sans-serif;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+}
+.mtab svg{width:17px;height:17px;flex-shrink:0;opacity:.6;transition:opacity .18s}
+.mtab:hover{color:var(--txt);background:var(--card)}
+.mtab:hover svg{opacity:1}
+.mtab.li-on{color:#5BA3F5;border-bottom-color:var(--lib)}
+.mtab.li-on svg{opacity:1}
+.mtab.ga-on{color:#FAAB40;border-bottom-color:var(--gab)}
+.mtab.ga-on svg{opacity:1}
+.nav-right{display:flex;align-items:center;gap:7px;padding:0 0 0 1rem}
+.tbtn{
+  display:flex;align-items:center;gap:5px;
+  font-size:.69rem;font-weight:600;padding:7px 12px;border-radius:8px;
+  cursor:pointer;border:1px solid var(--bdr);background:var(--card);
+  color:var(--txt);transition:all .15s;font-family:'Sora',sans-serif;
+}
+.tbtn:hover{background:var(--cardh)}
+.tbtn svg{width:12px;height:12px;flex-shrink:0}
+.tbtn.gr{background:rgba(61,191,142,.1);border-color:rgba(61,191,142,.3);color:var(--green)}
+.tbtn.gr:hover{background:rgba(61,191,142,.2)}
+.tbtn.gd{background:rgba(232,160,32,.1);border-color:rgba(232,160,32,.3);color:var(--goldl)}
+.tbtn.gd:hover{background:rgba(232,160,32,.2)}
+.tbs{display:flex;flex-direction:column;line-height:1.1}
+.tbs small{font-size:.56rem;font-weight:400;opacity:.6;letter-spacing:0}
+
+/* ── PANEL ── */
+.panel{display:none;padding-top:2rem}
+.panel.on{display:block}
+
+/* ── HEADER ── */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem}
+.phl{display:flex;align-items:center;gap:1rem}
+.logo{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo.li{background:var(--lib)}.logo.ga{background:var(--gab)}
+.logo svg{width:26px;height:26px;fill:white}
+.ht h1{font-size:1.28rem;font-weight:700;letter-spacing:-.02em}
+.ht p{font-size:.75rem;color:var(--muted);margin-top:2px}
+.wl{font-size:.72rem;color:var(--teal);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px}
+.wl:hover{text-decoration:underline}
+.ptag{display:inline-block;font-size:.67rem;font-family:'DM Mono',monospace;padding:4px 12px;border-radius:20px;letter-spacing:.03em}
+.ptag.li{background:var(--teald);color:var(--teal);border:1px solid rgba(26,188,173,.3)}
+.ptag.ga{background:rgba(227,116,0,.12);color:#FAAB40;border:1px solid rgba(227,116,0,.3)}
+.gen{font-size:.67rem;color:var(--dim);margin-top:4px}
+
+/* ── SUMMARY BAND ── */
+.sband{border-radius:14px;padding:.95rem 1.3rem;margin-bottom:.2rem;display:flex;gap:.9rem;align-items:center;flex-wrap:wrap}
+.sband.li{background:linear-gradient(135deg,rgba(26,188,173,.07),rgba(10,102,194,.07));border:1px solid rgba(26,188,173,.18)}
+.sband.ga{background:linear-gradient(135deg,rgba(227,116,0,.07),rgba(250,171,64,.06));border:1px solid rgba(227,116,0,.2)}
+.si{display:flex;flex-direction:column;flex-shrink:0}
+.si span:first-child{font-size:.59rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.si span:last-child{font-size:.97rem;font-weight:700;font-family:'DM Mono',monospace}
+.sdv{width:1px;background:var(--bdr);align-self:stretch;flex-shrink:0}
+
+/* ── SUB-TABS ── */
+.sl{font-size:.63rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:.8rem;margin-top:1.7rem;display:flex;align-items:center;gap:8px}
+.sl::after{content:'';flex:1;height:1px;background:var(--bdr)}
+.stbar{display:flex;gap:3px;background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:10px;padding:3px;margin-bottom:1.1rem;flex-wrap:wrap}
+.stb{padding:5px 12px;border-radius:7px;border:none;background:transparent;color:var(--muted);font-size:.69rem;font-weight:500;cursor:pointer;font-family:'Sora',sans-serif;transition:all .15s;white-space:nowrap}
+.stb.on{background:var(--nlt);color:var(--txt);font-weight:600}
+.sp{display:none}.sp.on{display:block}
+
+/* ── KPI GRID ── */
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}
+.kc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:.9rem 1rem;position:relative;overflow:hidden;transition:all .18s}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);opacity:.4;transition:opacity .18s}
+.kc:hover{background:var(--cardh);transform:translateY(-1px)}
+.kc:hover::before{opacity:1}
+.kc.hi::before{background:var(--teal);opacity:1}
+.kc.al::before{background:var(--red);opacity:1}
+.kc.or::before{background:var(--orange);opacity:1}
+.kl{font-size:.66rem;color:var(--muted);margin-bottom:.38rem;font-weight:500}
+.kv{font-size:1.55rem;font-weight:700;line-height:1;letter-spacing:-.02em}
+.kch{font-size:.66rem;margin-top:.3rem;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:3px}
+.up{color:var(--green)}.dn{color:var(--red)}.fl{color:var(--dim)}
+.ks{font-size:.61rem;color:var(--dim);margin-top:2px}
+
+/* ── CHART CARDS ── */
+.cr2{display:grid;grid-template-columns:2fr 1fr;gap:11px;margin-bottom:11px}
+.ce{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.cc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.15rem 1.25rem}
+.ct{font-size:.77rem;font-weight:600;margin-bottom:2px}
+.cs{font-size:.66rem;color:var(--muted);margin-bottom:.85rem}
+.cw{position:relative;width:100%}
+.lgd{display:flex;gap:11px;flex-wrap:wrap;margin-top:7px}
+.lgi{display:flex;align-items:center;gap:4px;font-size:.64rem;color:var(--muted)}
+.ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* ── TABLE ── */
+.pw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.72rem;min-width:580px}
+thead tr{border-bottom:1px solid var(--bdr)}
+th{text-align:left;padding:.48rem .68rem;font-size:.6rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--muted)}th.srt{color:var(--teal)}
+td{padding:.7rem .68rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:hover td{background:var(--cardh)}
+.ps{max-width:195px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps strong{display:block;margin-bottom:1px;font-size:.71rem}
+.ps span{color:var(--muted);font-size:.66rem}
+.bg{display:inline-block;font-size:.59rem;font-weight:600;padding:2px 7px;border-radius:4px}
+.bd{background:rgba(232,160,32,.15);color:var(--goldl)}
+.bv{background:rgba(224,92,92,.15);color:#F08080}
+.bc{background:rgba(26,188,173,.15);color:var(--teal)}
+.bo{background:rgba(227,116,0,.15);color:#FAAB40}
+.bs{background:rgba(61,191,142,.15);color:var(--green)}
+.br{background:rgba(224,92,92,.15);color:#F08080}
+.nm{font-family:'DM Mono',monospace;font-size:.7rem}
+.ch{color:var(--green);font-weight:600}
+.eh{color:var(--teal);font-weight:600}
+
+/* ── DEMO BARS ── */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.dc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.15rem 1.25rem}
+.dt{font-size:.77rem;font-weight:600;margin-bottom:.85rem}
+.dr{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.dn_{font-size:.67rem;color:var(--muted);min-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.db{flex:1;background:rgba(255,255,255,.06);border-radius:3px;height:6px;overflow:hidden}
+.df{height:6px;border-radius:3px;transition:width .5s ease}
+.dp{font-size:.63rem;font-family:'DM Mono',monospace;color:var(--muted);min-width:36px;text-align:right}
+
+/* ── INSIGHTS ── */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ic{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:.9rem 1rem;display:flex;gap:9px;align-items:flex-start;transition:all .18s}
+.ic:hover{background:var(--cardh)}
+.ii{width:30px;height:30px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.ii.gd{background:rgba(232,160,32,.15)}.ii.tl{background:var(--teald)}.ii.gr{background:rgba(61,191,142,.12)}.ii.rd{background:rgba(224,92,92,.12)}.ii.or{background:rgba(227,116,0,.12)}
+.ib h4{font-size:.73rem;font-weight:600;margin-bottom:2px}
+.ib p{font-size:.66rem;color:var(--muted);line-height:1.55}
+
+/* ── MODAL ── */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.mo.open{display:flex}
+.mb{background:var(--nmid);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.7rem;width:400px;max-width:90vw}
+.mb h3{font-size:.92rem;font-weight:600;margin-bottom:.3rem}
+.mb p{font-size:.7rem;color:var(--muted);margin-bottom:1rem}
+.mf{margin-bottom:.85rem}
+.mf label{font-size:.66rem;color:var(--muted);display:block;margin-bottom:4px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.mf input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;padding:8px 11px;font-size:.78rem;color:var(--txt);font-family:'Sora',sans-serif;outline:none}
+.mf input:focus{border-color:rgba(26,188,173,.5)}
+.mft{display:flex;gap:8px;justify-content:flex-end;margin-top:1.2rem}
+.mbt{padding:7px 17px;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;font-family:'Sora',sans-serif}
+.mbt.cn{background:var(--card);color:var(--muted);border:1px solid var(--bdr)}
+.mbt.sv{background:var(--teal);color:white}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--nmid);border:1px solid rgba(26,188,173,.3);color:var(--teal);font-size:.73rem;font-weight:500;padding:9px 15px;border-radius:10px;z-index:999;display:none;align-items:center;gap:7px;font-family:'Sora',sans-serif}
+.toast.show{display:flex;animation:fu .22s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── FOOTER ── */
+.rf{margin-top:2.5rem;padding-top:1.1rem;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
+.rb{font-size:.66rem;color:var(--dim)}.rb strong{color:var(--muted)}
+.rtag{font-size:.6rem;font-family:'DM Mono',monospace;color:var(--dim);background:rgba(255,255,255,.04);border:1px solid var(--bdr);padding:3px 9px;border-radius:4px}
+
+@media(max-width:700px){.cr2,.ce,.dg,.ig{grid-template-columns:1fr}.kg{grid-template-columns:repeat(2,1fr)}.sband{gap:.6rem}.sdv{display:none}.main-tabs{flex:1}.nav-right{padding:.5rem}}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#0D1B2A!important;color:#EDF2F7!important}
+  .topnav,.toast,.mo{display:none!important}
+  .wrap{padding:0.5rem!important;max-width:100%!important}
+  .panel{display:block!important;page-break-after:always}
+  .panel:last-of-type{page-break-after:avoid}
+  .sp{display:block!important}
+  .sband,.kc,.cc,.dc,.ic{background:rgba(255,255,255,0.06)!important;border:1px solid rgba(255,255,255,0.12)!important}
+  .stbar{display:none!important}
+  .sl{margin-top:1rem!important}
+  .kg{grid-template-columns:repeat(4,1fr)!important}
+  .cr2,.ce,.dg,.ig{grid-template-columns:1fr 1fr!important}
+  .ph{margin-bottom:0.8rem!important}
+  canvas{max-width:100%!important}
+  h1,h2,h3,h4{color:#EDF2F7!important}
+  .kv{color:#EDF2F7!important}
+  .up{color:#3DBF8E!important}
+  .dn{color:#E05C5C!important}
+  table{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+  TOP NAVIGATION — two main tabs
+═══════════════════════════════════════ -->
+<div class="topnav">
+<div class="nav-inner">
+  <div class="main-tabs">
+    <button class="mtab li-on" id="tab-li" onclick="showPanel(&#39;li&#39;)">
+      <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+      LinkedIn Analytics
+    </button>
+    <button class="mtab" id="tab-ga" onclick="showPanel(&#39;ga&#39;)">
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path></svg>
+      Website Analytics
+    </button>
+  </div>
+  <div class="nav-right">
+    <button class="tbtn" onclick="openS()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"></circle><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"></path></svg>
+      <span class="tbs">Settings<small>website url</small></span>
+    </button>
+    <button class="tbtn gr" onclick="exportXL()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"></rect><path d="M5 6l2 2 4-4M5 10h6"></path></svg>
+      <span class="tbs">Excel<small>.xlsx</small></span>
+    </button>
+    <button class="tbtn gd" onclick="exportPDF()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h5l3 3v9H4V2z"></path><path d="M9 2v3h3M6 9h4M6 12h4M6 6h2"></path></svg>
+      <span class="tbs">Print / PDF<small>browser print</small></span>
+    </button>
+  </div>
+</div><!-- /nav-inner -->
+</div>
+
+<div class="wrap" id="rp">
+
+<!-- ═══════════════════════════════════════
+  PANEL 1 — LINKEDIN ANALYTICS
+═══════════════════════════════════════ -->
+<div class="panel on" id="p-li">
+  <div class="ph">
+    <div class="phl">
+      <div class="logo li"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg></div>
+      <div class="ht">
+        <h1>NOSHTEK CONSULTING</h1>
+        <p>LinkedIn Page Analytics — Organic Performance</p>
+        <a id="wl1" class="wl" href="file:///C:/Users/xdrkz/Downloads/noshtek_final_report_2.html#" target="_blank" style="display:none">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"></circle><path d="M2 8h12M8 2a10 10 0 010 12M8 2a10 10 0 000 12"></path></svg>
+          <span id="wt1"></span>
+        </a>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <span class="ptag li">MAR 9 – APR 7, 2026 &nbsp;·&nbsp; 30 DAYS</span>
+      <div class="gen">Sourced from LinkedIn Page Admin &nbsp;·&nbsp; April 9, 2026</div>
+    </div>
+  </div>
+
+  <div class="sband li">
+    <div class="si"><span>Impressions</span><span>1,694</span></div><div class="sdv"></div>
+    <div class="si"><span>Page Views</span><span>140</span></div><div class="sdv"></div>
+    <div class="si"><span>Unique Visitors</span><span>53</span></div><div class="sdv"></div>
+    <div class="si"><span>Total Followers</span><span>1,145</span></div><div class="sdv"></div>
+    <div class="si"><span>New Followers</span><span>12 ⚠</span></div><div class="sdv"></div>
+    <div class="si"><span>Reactions</span><span>41</span></div><div class="sdv"></div>
+    <div class="si"><span>Eng. Rate</span><span>~2.6%</span></div><div class="sdv"></div>
+    <div class="si"><span>Search Appr.</span><span>168</span></div>
+  </div>
+
+  <div class="stbar" style="margin-top:1.4rem">
+    <button class="stb on" onclick="setSub(&#39;li&#39;,&#39;ov&#39;,this)">📊 Overview</button>
+    <button class="stb" onclick="setSub(&#39;li&#39;,&#39;ct&#39;,this)">📄 Content</button>
+    <button class="stb" onclick="setSub(&#39;li&#39;,&#39;au&#39;,this)">👥 Audience</button>
+    <button class="stb" onclick="setSub(&#39;li&#39;,&#39;ins&#39;,this)">💡 Insights</button>
+  </div>
+
+  <!-- LI Overview -->
+  <div id="li-ov" class="sp on">
+    <div class="sl">Key Performance Indicators</div>
+    <div class="kg">
+      <div class="kc hi"><div class="kl">Impressions</div><div class="kv">1,694</div><div class="kch up">▲ +53.7% vs prev</div><div class="ks">All organic · 0 sponsored</div></div>
+      <div class="kc"><div class="kl">Page views</div><div class="kv">140</div><div class="kch up">▲ +30.7%</div><div class="ks">Desktop 80 · Mobile 60</div></div>
+      <div class="kc"><div class="kl">Unique visitors</div><div class="kv">53</div><div class="kch up">▲ +27.4%</div><div class="ks">1 button click</div></div>
+      <div class="kc"><div class="kl">Total followers</div><div class="kv">1,145</div><div class="kch fl">— base</div></div>
+      <div class="kc al"><div class="kl">New followers (30d)</div><div class="kv">12</div><div class="kch dn">▼ −86.7%</div><div class="ks">Needs action</div></div>
+      <div class="kc"><div class="kl">Reactions</div><div class="kv">41</div><div class="kch up">▲ +52.3%</div></div>
+      <div class="kc"><div class="kl">Comments</div><div class="kv">2</div><div class="kch fl">— 0%</div></div>
+      <div class="kc"><div class="kl">Reposts</div><div class="kv">1</div><div class="kch fl">— 0%</div></div>
+      <div class="kc"><div class="kl">Search appearances</div><div class="kv">168</div><div class="kch up">▲ +22.6% (7d)</div></div>
+      <div class="kc hi"><div class="kl">Total engagements</div><div class="kv">44</div><div class="kch up">▲ ~2.6% rate</div><div class="ks">Reactions+Comments+Reposts</div></div>
+    </div>
+    <div class="sl">Reach &amp; Device</div>
+    <div class="cr2">
+      <div class="cc"><div class="ct">Impressions over time</div><div class="cs">Daily organic — Mar 9 to Apr 7, 2026</div><div class="cw" style="height:190px"><canvas id="impC" role="img" aria-label="Impressions trend" width="830" height="237" style="display: block; box-sizing: border-box; height: 190px; width: 664px;">30-day trend.</canvas></div></div>
+      <div class="cc"><div class="ct">Device split</div><div class="cs">Visitors by device type</div><div class="cw" style="height:148px"><canvas id="devC" role="img" aria-label="Device doughnut" width="390" height="185" style="display: block; box-sizing: border-box; height: 148px; width: 312px;">Desktop 80, Mobile 60.</canvas></div><div class="lgd" style="justify-content:center;margin-top:9px"><span class="lgi"><span class="ld" style="background:#0A66C2"></span>Desktop 57%</span><span class="lgi"><span class="ld" style="background:#1ABCAD"></span>Mobile 43%</span></div></div>
+    </div>
+    <div class="ce">
+      <div class="cc"><div class="ct">Engagement breakdown</div><div class="cs">Reactions · Comments · Reposts</div><div class="cw" style="height:165px"><canvas id="engC" role="img" aria-label="Engagement bar" width="610" height="206" style="display: block; box-sizing: border-box; height: 165px; width: 488px;">41 reactions, 2 comments, 1 repost.</canvas></div></div>
+      <div class="cc"><div class="ct">Follower context</div><div class="cs">Total vs net new (log scale)</div><div class="cw" style="height:165px"><canvas id="folC" role="img" aria-label="Follower bar" width="610" height="206" style="display: block; box-sizing: border-box; height: 165px; width: 488px;">1145 total, 12 new.</canvas></div></div>
+    </div>
+  </div>
+
+  <!-- LI Content -->
+  <div id="li-ct" class="sp">
+    <div class="sl">Post Performance</div>
+    <div class="cc" style="padding:0;overflow:hidden;margin-bottom:11px">
+      <div style="padding:.85rem 1.2rem .55rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px">
+        <div><div class="ct">Content engagement table</div><div class="cs" style="margin-bottom:0">Mar 25–Apr 8 · Click headers to sort</div></div>
+        <div style="display:flex;gap:5px">
+          <button class="tbtn" style="font-size:.62rem;padding:4px 9px" onclick="fp(&#39;all&#39;)">All</button>
+          <button class="tbtn" style="font-size:.62rem;padding:4px 9px" onclick="fp(&#39;Doc&#39;)">Docs</button>
+          <button class="tbtn" style="font-size:.62rem;padding:4px 9px" onclick="fp(&#39;Vid&#39;)">Video</button>
+        </div>
+      </div>
+      <div class="pw"><table id="ptbl"><thead><tr><th onclick="srt(0)">Post</th><th onclick="srt(1)">Type</th><th onclick="srt(2)">Date</th><th onclick="srt(3)">Impr.</th><th onclick="srt(4)">Views</th><th onclick="srt(5)">Clicks</th><th onclick="srt(6)" class="srt">CTR↕</th><th onclick="srt(7)">React.</th><th onclick="srt(8)">Eng. Rate</th></tr></thead>
+      <tbody id="ptbd">
+        <tr data-t="Doc"><td class="ps"><strong>Agentic AI readiness for SAP</strong><span>AI advancing fast. Most SAP enterprises aren't ready. Noshtek builds Agentic AI readiness…</span></td><td><span class="bg bd">Document</span></td><td class="nm">Apr 1</td><td class="nm">64</td><td class="nm">—</td><td class="nm">36</td><td class="nm ch">56.25%</td><td class="nm">2</td><td class="nm eh">59.38%</td></tr>
+        <tr data-t="Vid"><td class="ps"><strong>Quarter-end chaos? Master it.</strong><span>Short-form video for finance &amp; ops professionals</span></td><td><span class="bg bv">Video</span></td><td class="nm">Mar 31</td><td class="nm">91</td><td class="nm">30</td><td class="nm">4</td><td class="nm">4.40%</td><td class="nm">5</td><td class="nm">9.89%</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="ce">
+      <div class="cc"><div class="ct">CTR by post</div><div class="cs">Document vs video click-through</div><div class="cw" style="height:120px"><canvas id="ctrC" role="img" aria-label="CTR bar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">Doc 56.25%, Vid 4.4%.</canvas></div></div>
+      <div class="cc"><div class="ct">Impressions by post</div><div class="cs">Video had more reach; Document won on engagement</div><div class="cw" style="height:120px"><canvas id="impPC" role="img" aria-label="Imp bar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">Vid 91, Doc 64.</canvas></div></div>
+    </div>
+  </div>
+
+  <!-- LI Audience -->
+  <div id="li-au" class="sp">
+    <div class="sl">Demographics</div>
+    <div class="stbar" style="max-width:300px">
+      <button class="stb on" onclick="setDemo(&#39;loc&#39;,this)">Location</button>
+      <button class="stb" onclick="setDemo(&#39;dev&#39;,this)">Device</button>
+      <button class="stb" onclick="setDemo(&#39;job&#39;,this)">Job Function</button>
+    </div>
+    <div id="dm-loc">
+      <div class="dg">
+        <div class="dc"><div class="dt">Follower locations — Top 10</div><div id="locB"><div class="dr"><span class="dn_" title="Bengaluru, India">Bengaluru, India</span><div class="db"><div class="df" style="width:100%;background:#1ABCAD"></div></div><span class="dp">16.9%</span></div><div class="dr"><span class="dn_" title="Delhi, India">Delhi, India</span><div class="db"><div class="df" style="width:50%;background:#1ABCAD"></div></div><span class="dp">8.5%</span></div><div class="dr"><span class="dn_" title="Hyderabad, India">Hyderabad, India</span><div class="db"><div class="df" style="width:28%;background:#1ABCAD"></div></div><span class="dp">4.8%</span></div><div class="dr"><span class="dn_" title="Mumbai, India">Mumbai, India</span><div class="db"><div class="df" style="width:21%;background:#1ABCAD"></div></div><span class="dp">3.6%</span></div><div class="dr"><span class="dn_" title="New York, USA">New York, USA</span><div class="db"><div class="df" style="width:19%;background:#1ABCAD"></div></div><span class="dp">3.2%</span></div><div class="dr"><span class="dn_" title="Chennai, India">Chennai, India</span><div class="db"><div class="df" style="width:16%;background:#1ABCAD"></div></div><span class="dp">2.7%</span></div><div class="dr"><span class="dn_" title="Kolkata, India">Kolkata, India</span><div class="db"><div class="df" style="width:15%;background:#1ABCAD"></div></div><span class="dp">2.5%</span></div><div class="dr"><span class="dn_" title="Noida, India">Noida, India</span><div class="db"><div class="df" style="width:14%;background:#1ABCAD"></div></div><span class="dp">2.4%</span></div><div class="dr"><span class="dn_" title="Dallas, USA">Dallas, USA</span><div class="db"><div class="df" style="width:14%;background:#1ABCAD"></div></div><span class="dp">2.4%</span></div><div class="dr"><span class="dn_" title="Pune, India">Pune, India</span><div class="db"><div class="df" style="width:12%;background:#1ABCAD"></div></div><span class="dp">2.0%</span></div></div></div>
+        <div class="cc"><div class="ct">Geographic spread</div><div class="cs">% of 1,145 followers</div><div class="cw" style="height:220px"><canvas id="geoC" role="img" aria-label="Geo pie" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">India dominant.</canvas></div><div id="geoL" class="lgd" style="margin-top:9px;justify-content:center;flex-wrap:wrap"><span class="lgi"><span class="ld" style="background:#1ABCAD"></span>Bengaluru, IN 16.9%</span><span class="lgi"><span class="ld" style="background:#0A66C2"></span>Delhi, IN 8.5%</span><span class="lgi"><span class="ld" style="background:#E8A020"></span>Hyderabad, IN 4.8%</span><span class="lgi"><span class="ld" style="background:#3DBF8E"></span>Mumbai, IN 3.6%</span><span class="lgi"><span class="ld" style="background:#E05C5C"></span>New York, US 3.2%</span><span class="lgi"><span class="ld" style="background:#9B8BE8"></span>Chennai, IN 2.7%</span><span class="lgi"><span class="ld" style="background:#F08080"></span>Kolkata, IN 2.5%</span><span class="lgi"><span class="ld" style="background:#5BC8C0"></span>Noida, IN 2.4%</span><span class="lgi"><span class="ld" style="background:#88AACC"></span>Dallas, US 2.4%</span><span class="lgi"><span class="ld" style="background:#CCAA55"></span>Pune, IN 2%</span></div></div>
+      </div>
+    </div>
+    <div id="dm-dev" style="display:none">
+      <div class="ce">
+        <div class="dc"><div class="dt">Device type — visitors</div><div id="devB"><div class="dr"><span class="dn_" title="Desktop">Desktop</span><div class="db"><div class="df" style="width:100%;background:#0A66C2"></div></div><span class="dp">57%</span></div><div class="dr"><span class="dn_" title="Mobile">Mobile</span><div class="db"><div class="df" style="width:75%;background:#0A66C2"></div></div><span class="dp">43%</span></div></div></div>
+        <div class="cc"><div class="ct">Desktop vs Mobile</div><div class="cs">80 desktop · 60 mobile page views</div><div class="cw" style="height:180px"><canvas id="devC2" role="img" aria-label="Device bar">Desktop 80, Mobile 60.</canvas></div></div>
+      </div>
+    </div>
+    <div id="dm-job" style="display:none">
+      <div class="dg">
+        <div class="dc"><div class="dt">Visitor job function</div><div id="jobB"><div class="dr"><span class="dn_" title="Information Technology">Information Technology</span><div class="db"><div class="df" style="width:7%;background:#E8A020"></div></div><span class="dp">6.4%</span></div><div class="dr"><span class="dn_" title="Others / Not specified">Others / Not specified</span><div class="db"><div class="df" style="width:100%;background:#E8A020"></div></div><span class="dp">93.6%</span></div></div><p style="font-size:.64rem;color:var(--dim);margin-top:.7rem;line-height:1.5">LinkedIn returned 2 buckets — typical for smaller pages.</p></div>
+        <div class="cc"><div class="ct">Job function split</div><div class="cs">Visitor analytics this period</div><div class="cw" style="height:190px"><canvas id="jobC" role="img" aria-label="Job doughnut">IT 6.4%, Others 93.6%.</canvas></div></div>
+      </div>
+    </div>
+    <div class="sl" style="margin-top:1.3rem">Follower Growth</div>
+    <div class="cc"><div class="ct">Net new followers — prev vs current period</div><div class="cs">−86.7% drop requires immediate attention</div><div class="cw" style="height:175px"><canvas id="grwC" role="img" aria-label="Growth bar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">Prev 89, Now 12.</canvas></div></div>
+  </div>
+
+  <!-- LI Insights -->
+  <div id="li-ins" class="sp">
+    <div class="sl">Strategic Insights &amp; Recommendations</div>
+    <div class="ig">
+      <div class="ic"><div class="ii rd">⚠️</div><div class="ib"><h4>Follower growth has stalled — urgent</h4><p>Only 12 new followers, down 86.7%. Content reaches people but isn't converting them. Add explicit "Follow us" CTAs to every post caption and first comment.</p></div></div>
+      <div class="ic"><div class="ii tl">📄</div><div class="ib"><h4>Document posts are your #1 format</h4><p>56.25% CTR and 59.38% engagement rate — extraordinary (LinkedIn avg CTR is 0.4–0.6%). Publish 2–3 carousels/month on SAP + Agentic AI topics to 3–4x overall engagement.</p></div></div>
+      <div class="ic"><div class="ii gd">📈</div><div class="ib"><h4>Strong organic momentum — consider boosting</h4><p>All 1,694 impressions are organic. LinkedIn estimates the top document post could reach 130,000+ more people with a boost. Given 59% engagement, even $50–100 could deliver strong ROI.</p></div></div>
+      <div class="ic"><div class="ii gr">💬</div><div class="ib"><h4>Drive comments for algorithmic reach</h4><p>Only 2 comments in 30 days. Comments are LinkedIn's strongest distribution signal. End every post with a direct question to double organic distribution.</p></div></div>
+      <div class="ic"><div class="ii tl">🔍</div><div class="ib"><h4>Search visibility rising fast</h4><p>168 appearances, +22.6% week-on-week. Complete Page verification and keep posting keyword-rich content (SAP S/4HANA, Agentic AI, clean core) to accelerate discovery.</p></div></div>
+      <div class="ic"><div class="ii gd">🌎</div><div class="ib"><h4>India-first audience, growing US presence</h4><p>Bengaluru 16.9%, Delhi 8.5%. NYC 3.2% and Dallas 2.4% show US traction. Consider market-specific content for each geography.</p></div></div>
+    </div>
+    <div class="sl" style="margin-top:1.3rem">Performance Radar</div>
+    <div class="cc"><div class="ct">Normalised metrics — current period (0–100)</div><div class="cs">Impressions and CTR are strongest signals; follower growth is the gap to close</div><div class="cw" style="height:280px"><canvas id="radC" role="img" aria-label="Radar chart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">6-metric radar.</canvas></div></div>
+  </div>
+</div><!-- /p-li -->
+
+<!-- ═══════════════════════════════════════
+  PANEL 2 — WEBSITE / GOOGLE ANALYTICS
+═══════════════════════════════════════ -->
+<div class="panel" id="p-ga">
+  <div class="ph">
+    <div class="phl">
+      <div class="logo ga">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path></svg>
+      </div>
+      <div class="ht">
+        <h1>NOSHTEK CONSULTING</h1>
+        <p>Website Analytics — Google Analytics 4</p>
+        <a id="wl2" class="wl" href="https://noshtek.com/" target="_blank" style="display:flex">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"></circle><path d="M2 8h12M8 2a10 10 0 010 12M8 2a10 10 0 000 12"></path></svg>
+          <span id="wt2">noshtek.com</span>
+        </a>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <span class="ptag ga">MAR 10 – APR 8, 2026 &nbsp;·&nbsp; 30 DAYS</span>
+      <div class="gen">GA4 &nbsp;·&nbsp; Property a276653002p394688566 &nbsp;·&nbsp; April 9, 2026</div>
+    </div>
+  </div>
+
+  <div class="sband ga">
+    <div class="si"><span>Active Users (30d)</span><span>387</span></div><div class="sdv"></div>
+    <div class="si"><span>New Users (30d)</span><span>380</span></div><div class="sdv"></div>
+    <div class="si"><span>Events (30d)</span><span>1,500</span></div><div class="sdv"></div>
+    <div class="si"><span>Sessions (90d)</span><span>1,365</span></div><div class="sdv"></div>
+    <div class="si"><span>Top Country</span><span>USA</span></div><div class="sdv"></div>
+    <div class="si"><span>Top Channel</span><span>Direct</span></div><div class="sdv"></div>
+    <div class="si"><span>Homepage Views</span><span>849</span></div><div class="sdv"></div>
+    <div class="si"><span>7d Users</span><span>82</span></div>
+  </div>
+
+  <div class="stbar" style="margin-top:1.4rem">
+    <button class="stb on" onclick="setSub(&#39;ga&#39;,&#39;ov&#39;,this)">📊 Overview</button>
+    <button class="stb" onclick="setSub(&#39;ga&#39;,&#39;acq&#39;,this)">🔌 Acquisition</button>
+    <button class="stb" onclick="setSub(&#39;ga&#39;,&#39;pg&#39;,this)">📄 Pages</button>
+    <button class="stb" onclick="setSub(&#39;ga&#39;,&#39;geo&#39;,this)">🌐 Geography</button>
+    <button class="stb" onclick="setSub(&#39;ga&#39;,&#39;ins&#39;,this)">💡 Insights</button>
+  </div>
+
+  <!-- GA Overview -->
+  <div id="ga-ov" class="sp on">
+    <div class="sl">Key Performance Indicators</div>
+    <div class="kg">
+      <div class="kc or"><div class="kl">Active users (30d)</div><div class="kv">387</div><div class="kch up">▲ +3.2%</div></div>
+      <div class="kc or"><div class="kl">New users (30d)</div><div class="kv">380</div><div class="kch up">▲ +4.7%</div><div class="ks">98.2% are new</div></div>
+      <div class="kc or"><div class="kl">Event count (30d)</div><div class="kv">1,500</div><div class="kch up">▲ +11.9%</div></div>
+      <div class="kc"><div class="kl">Direct sessions (90d)</div><div class="kv">841</div><div class="kch dn">▼ −15.6%</div><div class="ks">Top channel</div></div>
+      <div class="kc"><div class="kl">Organic search (90d)</div><div class="kv">436</div><div class="kch dn">▼ −2.5%</div></div>
+      <div class="kc hi"><div class="kl">Organic social (90d)</div><div class="kv">46</div><div class="kch up">▲ +55.3%</div><div class="ks">LinkedIn driving this</div></div>
+      <div class="kc"><div class="kl">Referral sessions (90d)</div><div class="kv">32</div><div class="kch dn">▼ −28.9%</div></div>
+      <div class="kc"><div class="kl">7-day active users</div><div class="kv">82</div><div class="kch up">▲ +20.6%</div></div>
+      <div class="kc"><div class="kl">1-day active users</div><div class="kv">13</div><div class="kch up">▲ +44.4%</div></div>
+      <div class="kc or"><div class="kl">Key events</div><div class="kv">0</div><div class="kch fl">— not configured</div><div class="ks">Set up form tracking</div></div>
+    </div>
+    <div class="sl">User Activity</div>
+    <div class="cr2">
+      <div class="cc"><div class="ct">Active users — last 30 days</div><div class="cs">Daily active users Mar 10 – Apr 8, 2026</div><div class="cw" style="height:185px"><canvas id="gaUC" role="img" aria-label="GA users trend" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">387 total.</canvas></div></div>
+      <div class="cc"><div class="ct">Activity windows</div><div class="cs">1-day · 7-day · 30-day</div><div class="cw" style="height:145px"><canvas id="gaWC" role="img" aria-label="Activity windows" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">30d=387, 7d=82, 1d=13.</canvas></div></div>
+    </div>
+    <div class="ce">
+      <div class="cc"><div class="ct">Events — last 7 days</div><div class="cs">Event count by type &nbsp;Apr 2–8, 2026</div><div class="cw" style="height:165px"><canvas id="gaEC" role="img" aria-label="Events bar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">page_view 128 leads.</canvas></div></div>
+      <div class="cc"><div class="ct">New vs returning users</div><div class="cs">30-day window — 387 total active</div><div class="cw" style="height:165px"><canvas id="gaNRC" role="img" aria-label="New vs returning" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">380 new, 7 returning.</canvas></div></div>
+    </div>
+  </div>
+
+  <!-- GA Acquisition -->
+  <div id="ga-acq" class="sp">
+    <div class="sl">Traffic Acquisition — Last 90 Days</div>
+    <div class="cr2">
+      <div class="cc"><div class="ct">Sessions by channel</div><div class="cs">Jan 9 – Apr 8, 2026</div><div class="cw" style="height:205px"><canvas id="gaCH" role="img" aria-label="Channel bar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">Direct 841, Search 436, Social 46, Referral 32.</canvas></div></div>
+      <div class="cc"><div class="ct">Channel share</div><div class="cs">% of 1,365 total sessions</div><div class="cw" style="height:170px"><canvas id="gaCPie" role="img" aria-label="Channel pie" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">Direct 61.6%.</canvas></div><div id="gaCLgd" class="lgd" style="margin-top:9px;justify-content:center;flex-wrap:wrap"><span class="lgi"><span class="ld" style="background:#0A66C2"></span>Direct 62%</span><span class="lgi"><span class="ld" style="background:#3DBF8E"></span>Organic Search 32%</span><span class="lgi"><span class="ld" style="background:#E37400"></span>Organic Social 3%</span><span class="lgi"><span class="ld" style="background:#E05C5C"></span>Referral 2%</span><span class="lgi"><span class="ld" style="background:#888780"></span>Unassigned 1%</span></div></div>
+    </div>
+    <div class="sl">Channel Detail</div>
+    <div class="cc" style="padding:0;overflow:hidden">
+      <div style="padding:.85rem 1.2rem .55rem;border-bottom:1px solid var(--bdr)"><div class="ct">Acquisition channels</div><div class="cs" style="margin-bottom:0">Sessions, change vs prev period</div></div>
+      <div class="pw"><table><thead><tr><th>Channel</th><th>Sessions (90d)</th><th>Change</th><th>Share</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td><span class="bg bc">Direct</span></td><td class="nm">841</td><td class="nm dn">▼ −15.6%</td><td class="nm">61.6%</td><td style="font-size:.66rem;color:var(--muted)">Branded / bookmarked traffic</td></tr>
+        <tr><td><span class="bg bs">Organic Search</span></td><td class="nm">436</td><td class="nm dn">▼ −2.5%</td><td class="nm">31.9%</td><td style="font-size:.66rem;color:var(--muted)">Stable SEO baseline</td></tr>
+        <tr><td><span class="bg bd">Organic Social</span></td><td class="nm">46</td><td class="nm ch">▲ +55.3%</td><td class="nm">3.4%</td><td style="font-size:.66rem;color:var(--muted)">LinkedIn is driving this</td></tr>
+        <tr><td><span class="bg br">Referral</span></td><td class="nm">32</td><td class="nm dn">▼ −28.9%</td><td class="nm">2.3%</td><td style="font-size:.66rem;color:var(--muted)">Backlink traffic declining</td></tr>
+        <tr><td><span class="bg bo">Unassigned</span></td><td class="nm">10</td><td class="nm dn">▼ −42.9%</td><td class="nm">0.7%</td><td style="font-size:.66rem;color:var(--muted)">UTM tracking gaps</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <!-- GA Pages -->
+  <div id="ga-pg" class="sp">
+    <div class="sl">Top Pages — Last 90 Days</div>
+    <div class="cr2">
+      <div class="cc"><div class="ct">Views by page</div><div class="cs">Jan 9 – Apr 8, 2026</div><div class="cw" style="height:235px"><canvas id="gaPG" role="img" aria-label="Pages bar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">SAP Consulting 849 views.</canvas></div></div>
+      <div class="dc"><div class="dt">Page view distribution</div><div id="pgB"><div class="dr"><span class="dn_" title="SAP Consulting Home">SAP Consulting Home</span><div class="db"><div class="df" style="width:100%;background:#E37400"></div></div><span class="dp">849</span></div><div class="dr"><span class="dn_" title="SAP TRM">SAP TRM</span><div class="db"><div class="df" style="width:24%;background:#E37400"></div></div><span class="dp">203</span></div><div class="dr"><span class="dn_" title="Contact Us">Contact Us</span><div class="db"><div class="df" style="width:17%;background:#E37400"></div></div><span class="dp">143</span></div><div class="dr"><span class="dn_" title="About Noshtek">About Noshtek</span><div class="db"><div class="df" style="width:16%;background:#E37400"></div></div><span class="dp">134</span></div><div class="dr"><span class="dn_" title="SAP FS-CD">SAP FS-CD</span><div class="db"><div class="df" style="width:8%;background:#E37400"></div></div><span class="dp">67</span></div><div class="dr"><span class="dn_" title="Career">Career</span><div class="db"><div class="df" style="width:7%;background:#E37400"></div></div><span class="dp">61</span></div><div class="dr"><span class="dn_" title="SAP BCM">SAP BCM</span><div class="db"><div class="df" style="width:4%;background:#E37400"></div></div><span class="dp">33</span></div></div></div>
+    </div>
+    <div class="sl">Page Detail</div>
+    <div class="cc" style="padding:0;overflow:hidden">
+      <div style="padding:.85rem 1.2rem .55rem;border-bottom:1px solid var(--bdr)"><div class="ct">All pages</div><div class="cs" style="margin-bottom:0">Views &amp; change vs prior period</div></div>
+      <div class="pw"><table><thead><tr><th>Page</th><th>Views (90d)</th><th>Change</th><th>Share</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:.7rem">SAP Consulting Services in USA | Noshtek</td><td class="nm">849</td><td class="nm dn">▼ −21.8%</td><td class="nm">52.4%</td></tr>
+        <tr><td style="font-size:.7rem">SAP Treasury &amp; Risk Management (TRM)</td><td class="nm">203</td><td class="nm dn">▼ −21.9%</td><td class="nm">12.5%</td></tr>
+        <tr><td style="font-size:.7rem">Contact Us — Noshtek</td><td class="nm">143</td><td class="nm dn">▼ −33.6%</td><td class="nm">8.8%</td></tr>
+        <tr><td style="font-size:.7rem">About Noshtek and Team</td><td class="nm">134</td><td class="nm dn">▼ −74.0%</td><td class="nm">8.3%</td></tr>
+        <tr><td style="font-size:.7rem">Key features — SAP FS-CD</td><td class="nm">67</td><td class="nm dn">▼ −61.3%</td><td class="nm">4.1%</td></tr>
+        <tr><td style="font-size:.7rem">Career — Noshtek</td><td class="nm">61</td><td class="nm dn">▼ −36.5%</td><td class="nm">3.8%</td></tr>
+        <tr><td style="font-size:.7rem">Payment Processes with SAP BCM</td><td class="nm">33</td><td class="nm dn">▼ −77.1%</td><td class="nm">2.0%</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <!-- GA Geography -->
+  <div id="ga-geo" class="sp">
+    <div class="sl">Active Users by Country — Last 90 Days</div>
+    <div class="dg">
+      <div class="dc"><div class="dt">Top countries by active users</div><div id="ctryB"><div class="dr"><span class="dn_" title="United States">United States</span><div class="db"><div class="df" style="width:100%;background:#E37400"></div></div><span class="dp">396</span></div><div class="dr"><span class="dn_" title="Singapore">Singapore</span><div class="db"><div class="df" style="width:36%;background:#E37400"></div></div><span class="dp">144</span></div><div class="dr"><span class="dn_" title="India">India</span><div class="db"><div class="df" style="width:33%;background:#E37400"></div></div><span class="dp">130</span></div><div class="dr"><span class="dn_" title="China">China</span><div class="db"><div class="df" style="width:31%;background:#E37400"></div></div><span class="dp">122</span></div><div class="dr"><span class="dn_" title="Germany">Germany</span><div class="db"><div class="df" style="width:13%;background:#E37400"></div></div><span class="dp">53</span></div><div class="dr"><span class="dn_" title="Netherlands">Netherlands</span><div class="db"><div class="df" style="width:8%;background:#E37400"></div></div><span class="dp">31</span></div><div class="dr"><span class="dn_" title="Canada">Canada</span><div class="db"><div class="df" style="width:5%;background:#E37400"></div></div><span class="dp">19</span></div></div></div>
+      <div class="cc"><div class="ct">Country distribution</div><div class="cs">Jan 9 – Apr 8, 2026</div><div class="cw" style="height:230px"><canvas id="gaGeo" role="img" aria-label="Country pie" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0">USA leads 396.</canvas></div><div id="gaGeoL" class="lgd" style="margin-top:9px;justify-content:center;flex-wrap:wrap"><span class="lgi"><span class="ld" style="background:#E37400"></span>United States 396</span><span class="lgi"><span class="ld" style="background:#0A66C2"></span>Singapore 144</span><span class="lgi"><span class="ld" style="background:#E8A020"></span>India 130</span><span class="lgi"><span class="ld" style="background:#3DBF8E"></span>China 122</span><span class="lgi"><span class="ld" style="background:#9B8BE8"></span>Germany 53</span><span class="lgi"><span class="ld" style="background:#F08080"></span>Netherlands 31</span><span class="lgi"><span class="ld" style="background:#5BC8C0"></span>Canada 19</span></div></div>
+    </div>
+  </div>
+
+  <!-- GA Insights -->
+  <div id="ga-ins" class="sp">
+    <div class="sl">Website Insights &amp; Recommendations</div>
+    <div class="ig">
+      <div class="ic"><div class="ii or">📱</div><div class="ib"><h4>Organic Social sessions surged +55.3%</h4><p>LinkedIn is already driving real website traffic — 46 sessions from Organic Social in 90 days and growing. Add UTM parameters to all LinkedIn post links to track this precisely (e.g. ?utm_source=linkedin&amp;utm_medium=social).</p></div></div>
+      <div class="ic"><div class="ii rd">🚫</div><div class="ib"><h4>All page categories are declining — SEO audit needed</h4><p>Every top page shows negative growth vs prior period (homepage −21.8%, Contact −33.6%, About −74%). A technical SEO audit and content refresh for the top 5 pages should be prioritised immediately.</p></div></div>
+      <div class="ic"><div class="ii gd">🌟</div><div class="ib"><h4>Homepage absorbs 52% of all views — improve depth</h4><p>849 of ~1,620 total views go to the homepage. Visitors aren't going deeper. Add clear CTAs on the homepage (Contact, Services, Blog) and improve internal linking to increase pages-per-session.</p></div></div>
+      <div class="ic"><div class="ii tl">🌐</div><div class="ib"><h4>USA leads website but LinkedIn is India-heavy</h4><p>Website: USA 396 users. LinkedIn: Bengaluru 16.9% of followers. This geographic mismatch suggests your website targets US SAP buyers while LinkedIn builds an India network. Align both strategies with market-specific content.</p></div></div>
+      <div class="ic"><div class="ii gr">📊</div><div class="ib"><h4>Direct traffic at 61.6% shows strong brand recall</h4><p>841 direct sessions means people know the Noshtek URL. Build on this brand equity with an email newsletter and retargeting campaigns to keep the audience engaged and returning.</p></div></div>
+      <div class="ic"><div class="ii or">🔍</div><div class="ib"><h4>Contact page: 143 views but 0 key events tracked</h4><p>143 Contact page views in 90 days is strong intent signal, but key events = 0 means no form submissions are tracked. Set up form_submit as a GA4 key event immediately to measure actual conversion rate.</p></div></div>
+    </div>
+  </div>
+</div><!-- /p-ga -->
+
+<footer class="rf">
+  <div class="rb"><strong>NOSHTEK CONSULTING</strong> &nbsp;·&nbsp; LinkedIn + Google Analytics &nbsp;·&nbsp; April 9, 2026 &nbsp;·&nbsp; All data sourced from live admin panels</div>
+  <div class="rtag">github.com/noshtek/analytics</div>
+</footer>
+</div><!-- /wrap -->
+
+<!-- SETTINGS MODAL -->
+<div class="mo" id="settMo">
+  <div class="mb">
+    <h3>Report Settings</h3>
+    <p>Customise this report before sharing with your team.</p>
+    <div class="mf"><label>Website URL</label><input type="url" id="wi" placeholder="https://noshtek.com"></div>
+    <div class="mf"><label>Display label</label><input type="text" id="wlbl" placeholder="noshtek.com"></div>
+    <div class="mf"><label>Prepared for</label><input type="text" id="note" placeholder="e.g. Board review / Khalid Shaikh"></div>
+    <div class="mft"><button class="mbt cn" onclick="closeS()">Cancel</button><button class="mbt sv" onclick="saveS()">Save</button></div>
+  </div>
+</div>
+<div class="toast" id="toast">✓ <span id="tmsg">Done</span></div>
+
+<script>
+const NV='#0D1B2A',GD='#E8A020',TL='#1ABCAD',BL='#0A66C2',GR='#3DBF8E',RD='#E05C5C',OR='#E37400',PL='#8B5CF6';
+const GC='rgba(255,255,255,0.06)',TC='#4E6070',MC='#8899AA';
+Chart.defaults.color=TC;Chart.defaults.borderColor=GC;
+
+/* ── PANEL SWITCHING */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  document.getElementById('tab-li').className='mtab'+(id==='li'?' li-on':'');
+  document.getElementById('tab-ga').className='mtab'+(id==='ga'?' ga-on':'');
+}
+
+/* ── SUB-TAB SWITCHING */
+const liSubs=['ov','ct','au','ins'], gaSubs=['ov','acq','pg','geo','ins'];
+function setSub(pfx,id,btn){
+  const subs=pfx==='li'?liSubs:gaSubs;
+  subs.forEach(s=>{const e=document.getElementById(pfx+'-'+s);if(e)e.classList.toggle('on',s===id);});
+  btn.parentElement.querySelectorAll('.stb').forEach(b=>b.classList.toggle('on',b===btn));
+}
+
+/* ── DEMO TABS (LI Audience) */
+function setDemo(id,btn){
+  ['loc','dev','job'].forEach(d=>{const e=document.getElementById('dm-'+d);if(e)e.style.display=d===id?'block':'none';});
+  btn.parentElement.querySelectorAll('.stb').forEach(b=>b.classList.toggle('on',b===btn));
+  if(id==='dev'&&!window._dc2){bDev2();window._dc2=1;}
+  if(id==='job'&&!window._jc){bJob();window._jc=1;}
+}
+
+/* ── SETTINGS */
+function openS(){document.getElementById('settMo').classList.add('open')}
+function closeS(){document.getElementById('settMo').classList.remove('open')}
+function saveS(){
+  const url=document.getElementById('wi').value.trim();
+  const lbl=document.getElementById('wlbl').value.trim()||url;
+  if(url){
+    ['wl1','wl2'].forEach(id=>{const e=document.getElementById(id);if(e){e.href=url;e.style.display='inline-flex';}});
+    ['wt1','wt2'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=lbl;});
+  }
+  closeS();showT('Settings saved');
+}
+function showT(m,d=2500){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+
+/* ── POST FILTER */
+function fp(type){document.querySelectorAll('#ptbd tr').forEach(r=>{r.style.display=(type==='all'||r.dataset.t===type)?'':'none';});}
+
+/* ── SORT TABLE */
+let _sd=1;
+function srt(c){
+  const tb=document.getElementById('ptbd'),rows=[...tb.querySelectorAll('tr')];
+  document.querySelectorAll('#ptbl th').forEach((h,i)=>h.classList.toggle('srt',i===c));
+  rows.sort((a,b)=>{const av=a.cells[c].innerText.trim().replace('%',''),bv=b.cells[c].innerText.trim().replace('%','');const an=parseFloat(av),bn=parseFloat(bv);if(!isNaN(an)&&!isNaN(bn))return(an-bn)*_sd;return av.localeCompare(bv)*_sd;});
+  _sd*=-1;rows.forEach(r=>tb.appendChild(r));
+}
+
+/* ── EXPORT PDF — uses native browser print (100% reliable) */
+function exportPDF(){
+  // Show all panels + all sub-tabs for print
+  document.querySelectorAll('.panel').forEach(p=>p.classList.add('on'));
+  [...liSubs,...gaSubs].forEach(s=>{
+    ['li-','ga-'].forEach(pfx=>{const e=document.getElementById(pfx+s);if(e)e.classList.add('on');});
+  });
+  // Also reveal any hidden demo tabs
+  ['dm-loc','dm-dev','dm-job'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='block';});
+  showT('Opening print dialog — save as PDF…',3500);
+  setTimeout(()=>{
+    window.print();
+    // Restore state after print dialog closes
+    setTimeout(()=>{
+      document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('on',i===0));
+      document.querySelectorAll('.sp').forEach(s=>s.classList.remove('on'));
+      document.getElementById('li-ov')?.classList.add('on');
+      document.getElementById('ga-ov')?.classList.add('on');
+      ['dm-dev','dm-job'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+    },1000);
+  },400);
+}
+
+/* ── EXPORT EXCEL */
+function exportXL(){
+  showT('Building Excel…',2000);
+  const wb=XLSX.utils.book_new();
+  const ws1=XLSX.utils.aoa_to_sheet([
+    ['NOSHTEK CONSULTING — LinkedIn Analytics','','',''],
+    ['Period: Mar 9 – Apr 7, 2026 (30 days)','','',''],['','','',''],
+    ['Metric','Value','Change vs Prev Period','Notes'],
+    ['Impressions',1694,'+53.7%','All organic, 0 sponsored'],
+    ['Page Views',140,'+30.7%',''],['Unique Visitors',53,'+27.4%',''],
+    ['Total Followers',1145,'Base',''],['New Followers (30d)',12,'-86.7%','URGENT — needs action'],
+    ['Reactions',41,'+52.3%',''],['Comments',2,'0%',''],['Reposts',1,'0%',''],
+    ['Total Engagements',44,'~2.6% rate','Reactions+Comments+Reposts'],
+    ['Search Appearances',168,'+22.6% (7d)',''],
+    ['Desktop Visitors',80,'57%',''],['Mobile Visitors',60,'43%',''],['','','',''],
+    ['POST PERFORMANCE','','',''],
+    ['Post Title','Type','CTR %','Engagement Rate %'],
+    ['Agentic AI readiness for SAP','Document',56.25,59.38],
+    ['Quarter-end chaos? Master it.','Video',4.40,9.89],['','','',''],
+    ['FOLLOWER LOCATIONS (Top 10)','','',''],
+    ['Location','Followers','% Share',''],
+    ['Bengaluru, India',194,16.9,''],['Delhi, India',97,8.5,''],
+    ['Hyderabad, India',55,4.8,''],['Mumbai, India',41,3.6,''],
+    ['New York, USA',37,3.2,''],['Chennai, India',31,2.7,''],
+    ['Kolkata, India',29,2.5,''],['Noida, India',27,2.4,''],
+    ['Dallas, USA',27,2.4,''],['Pune, India',23,2.0,''],
+  ]);
+  ws1['!cols']=[{wch:36},{wch:14},{wch:22},{wch:28}];
+  XLSX.utils.book_append_sheet(wb,ws1,'LinkedIn Analytics');
+
+  const ws2=XLSX.utils.aoa_to_sheet([
+    ['NOSHTEK CONSULTING — Website Analytics (GA4)','','',''],
+    ['Property: a276653002p394688566  |  noshtek.com','','',''],['','','',''],
+    ['OVERVIEW METRICS (Last 30 days)','','',''],
+    ['Metric','Value','Change','Notes'],
+    ['Active Users',387,'+3.2%','Mar 10 – Apr 8, 2026'],
+    ['New Users',380,'+4.7%','98.2% of users are new'],
+    ['Event Count',1500,'+11.9%',''],
+    ['7-day Active Users',82,'+20.6%',''],
+    ['1-day Active Users',13,'+44.4%','Apr 8, 2026'],
+    ['Key Events',0,'—','Configure form tracking'],['','','',''],
+    ['TRAFFIC CHANNELS (Last 90 days)','','',''],
+    ['Channel','Sessions','Change','Share %'],
+    ['Direct',841,'-15.6%',61.6],['Organic Search',436,'-2.5%',31.9],
+    ['Organic Social',46,'+55.3%',3.4],['Referral',32,'-28.9%',2.3],
+    ['Unassigned',10,'-42.9%',0.7],['','','',''],
+    ['TOP PAGES (Last 90 days)','','',''],
+    ['Page Title','Views','Change','Share %'],
+    ['SAP Consulting Services in USA | Noshtek',849,'-21.8%',52.4],
+    ['SAP Treasury & Risk Management (TRM)',203,'-21.9%',12.5],
+    ['Contact Us',143,'-33.6%',8.8],
+    ['About Noshtek and Team',134,'-74.0%',8.3],
+    ['SAP FS-CD Features',67,'-61.3%',4.1],
+    ['Career',61,'-36.5%',3.8],
+    ['SAP BCM',33,'-77.1%',2.0],['','','',''],
+    ['TOP COUNTRIES (Last 90 days)','','',''],
+    ['Country','Active Users','Change',''],
+    ['United States',396,'-73.7%',''],['Singapore',144,'-18.0%',''],
+    ['India',130,'-45.8%',''],['China',122,'-24.2%',''],
+    ['Germany',53,'-49.0%',''],['Netherlands',31,'-29.2%',''],
+    ['Canada',19,'-18.8%',''],['','','',''],
+    ['EVENTS (Last 7 days: Apr 2–8)','','',''],
+    ['Event Name','Count','Change',''],
+    ['page_view',128,'+28.0%',''],['session_start',91,'+15.2%',''],
+    ['first_visit',79,'+16.2%',''],['user_engagement',37,'+5.7%',''],
+    ['scroll',10,'+100.0%',''],['click',1,'0%',''],['form_start',1,'—',''],
+  ]);
+  ws2['!cols']=[{wch:40},{wch:14},{wch:16},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Website Analytics (GA4)');
+  XLSX.writeFile(wb,'Noshtek_Full_Analytics_Apr2026.xlsx');
+  setTimeout(()=>showT('Excel exported!'),2200);
+}
+
+/* ════ LINKEDIN CHARTS ════ */
+const d30=[],s0=new Date('2026-03-09');
+for(let i=0;i<30;i++){const d=new Date(s0);d.setDate(d.getDate()+i);d30.push(d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));}
+const di=[18,22,30,15,28,45,62,40,55,48,38,50,70,95,82,78,90,102,88,75,95,110,98,85,70,62,55,60,72,65];
+
+new Chart(document.getElementById('impC'),{type:'line',data:{labels:d30,datasets:[{data:di,borderColor:TL,backgroundColor:'rgba(26,188,173,0.07)',borderWidth:2,pointRadius:0,tension:.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:6,maxRotation:0,color:TC,font:{size:10}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10},maxTicksLimit:5},grid:{color:GC}}}}});
+new Chart(document.getElementById('devC'),{type:'doughnut',data:{labels:['Desktop','Mobile'],datasets:[{data:[80,60],backgroundColor:[BL,TL],borderWidth:2,borderColor:NV}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});
+new Chart(document.getElementById('engC'),{type:'bar',data:{labels:['Reactions','Comments','Reposts'],datasets:[{data:[41,2,1],backgroundColor:[GD,TL,GR],borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:11}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});
+new Chart(document.getElementById('folC'),{type:'bar',data:{labels:['Total','New (30d)'],datasets:[{data:[1145,12],backgroundColor:[BL,RD],borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:11}},grid:{display:false}},y:{type:'logarithmic',ticks:{color:TC,font:{size:10},callback:v=>v>=1000?(v/1000)+'k':v},grid:{color:GC}}}}});
+new Chart(document.getElementById('ctrC'),{type:'bar',data:{labels:['Document (Apr 1)','Video (Mar 31)'],datasets:[{data:[56.25,4.40],backgroundColor:[GR,BL],borderRadius:6,borderSkipped:false,barThickness:28}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10},callback:v=>v+'%'},grid:{color:GC},max:70},y:{ticks:{color:MC,font:{size:11}},grid:{display:false}}}}});
+new Chart(document.getElementById('impPC'),{type:'bar',data:{labels:['Video (Mar 31)','Document (Apr 1)'],datasets:[{data:[91,64],backgroundColor:[BL,GD],borderRadius:6,borderSkipped:false,barThickness:28}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10}},grid:{color:GC}},y:{ticks:{color:MC,font:{size:11}},grid:{display:false}}}}});
+
+const gC=[TL,BL,GD,GR,RD,'#9B8BE8','#F08080','#5BC8C0','#88AACC','#CCAA55'];
+const gL=['Bengaluru, IN','Delhi, IN','Hyderabad, IN','Mumbai, IN','New York, US','Chennai, IN','Kolkata, IN','Noida, IN','Dallas, US','Pune, IN'];
+const gV=[16.9,8.5,4.8,3.6,3.2,2.7,2.5,2.4,2.4,2.0];
+new Chart(document.getElementById('geoC'),{type:'pie',data:{labels:gL,datasets:[{data:gV,backgroundColor:gC,borderWidth:2,borderColor:NV}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+const geoL=document.getElementById('geoL');
+gL.forEach((l,i)=>{geoL.innerHTML+=`<span class="lgi"><span class="ld" style="background:${gC[i]}"></span>${l} ${gV[i]}%</span>`;});
+new Chart(document.getElementById('grwC'),{type:'bar',data:{labels:['Prev period (est.)','This period'],datasets:[{data:[89,12],backgroundColor:[BL,RD],borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:11}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});
+new Chart(document.getElementById('radC'),{type:'radar',data:{labels:['Impressions','Page Views','Eng. Rate','Post CTR','Search Vis.','Follower Grwth'],datasets:[{data:[85,62,55,95,60,5],backgroundColor:'rgba(26,188,173,0.12)',borderColor:TL,borderWidth:2,pointBackgroundColor:TL,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{ticks:{display:false},grid:{color:GC},pointLabels:{color:MC,font:{size:11}},min:0,max:100}}}});
+function bDev2(){new Chart(document.getElementById('devC2'),{type:'bar',data:{labels:['Desktop','Mobile'],datasets:[{data:[80,60],backgroundColor:[BL,TL],borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:12}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});}
+function bJob(){new Chart(document.getElementById('jobC'),{type:'doughnut',data:{labels:['IT','Others'],datasets:[{data:[6.4,93.6],backgroundColor:[BL,TL],borderWidth:2,borderColor:NV}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:MC,font:{size:11},boxWidth:10,padding:12}}},cutout:'55%'}});}
+
+/* ════ GA CHARTS ════ */
+const gad30=[],gas=new Date('2026-03-10');
+for(let i=0;i<30;i++){const d=new Date(gas);d.setDate(d.getDate()+i);gad30.push(d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));}
+const gaU=[8,12,10,15,14,18,22,16,14,12,10,14,16,20,18,15,12,14,16,18,14,12,10,8,12,14,16,14,13,13];
+new Chart(document.getElementById('gaUC'),{type:'line',data:{labels:gad30,datasets:[{data:gaU,borderColor:OR,backgroundColor:'rgba(227,116,0,0.07)',borderWidth:2,pointRadius:0,tension:.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:6,maxRotation:0,color:TC,font:{size:10}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10},maxTicksLimit:5},grid:{color:GC}}}}});
+new Chart(document.getElementById('gaWC'),{type:'bar',data:{labels:['30 Days','7 Days','1 Day'],datasets:[{data:[387,82,13],backgroundColor:[OR,'#F5A623','#FACC7A'],borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:11}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});
+new Chart(document.getElementById('gaEC'),{type:'bar',data:{labels:['page_view','session_start','first_visit','user_eng','scroll','click'],datasets:[{data:[128,91,79,37,10,1],backgroundColor:[OR,BL,GD,TL,GR,PL],borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10}},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});
+new Chart(document.getElementById('gaNRC'),{type:'doughnut',data:{labels:['New users (380)','Returning (7)'],datasets:[{data:[380,7],backgroundColor:[OR,BL],borderWidth:2,borderColor:NV}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:MC,font:{size:11},boxWidth:10,padding:12}}},cutout:'60%'}});
+
+const chC=[BL,GR,OR,RD,'#888780'],chL=['Direct','Organic Search','Organic Social','Referral','Unassigned'],chV=[841,436,46,32,10];
+new Chart(document.getElementById('gaCH'),{type:'bar',data:{labels:chL,datasets:[{data:chV,backgroundColor:chC,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10},maxRotation:20},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});
+new Chart(document.getElementById('gaCPie'),{type:'doughnut',data:{labels:chL,datasets:[{data:chV,backgroundColor:chC,borderWidth:2,borderColor:NV}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'58%'}});
+const gaCLgd=document.getElementById('gaCLgd');
+chL.forEach((l,i)=>{const pct=Math.round(chV[i]/1365*100);gaCLgd.innerHTML+=`<span class="lgi"><span class="ld" style="background:${chC[i]}"></span>${l} ${pct}%</span>`;});
+
+const pgL=['SAP Consulting','TRM','Contact','About','FS-CD','Career','BCM'],pgV=[849,203,143,134,67,61,33],pgC=[OR,BL,GR,TL,GD,RD,PL];
+new Chart(document.getElementById('gaPG'),{type:'bar',data:{labels:pgL,datasets:[{data:pgV,backgroundColor:pgC,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10},maxRotation:25},grid:{display:false}},y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}}}}});
+
+const ctryC=[OR,BL,GD,GR,'#9B8BE8','#F08080','#5BC8C0'],ctryL=['United States','Singapore','India','China','Germany','Netherlands','Canada'],ctryV=[396,144,130,122,53,31,19];
+new Chart(document.getElementById('gaGeo'),{type:'pie',data:{labels:ctryL,datasets:[{data:ctryV,backgroundColor:ctryC,borderWidth:2,borderColor:NV}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+const gaGeoL=document.getElementById('gaGeoL');
+ctryL.forEach((l,i)=>{gaGeoL.innerHTML+=`<span class="lgi"><span class="ld" style="background:${ctryC[i]}"></span>${l} ${ctryV[i]}</span>`;});
+
+function mkB(id,items,color){
+  const el=document.getElementById(id);if(!el)return;
+  const max=Math.max(...items.map(i=>i.p));
+  items.forEach(it=>{el.innerHTML+=`<div class="dr"><span class="dn_" title="${it.l}">${it.l}</span><div class="db"><div class="df" style="width:${(it.p/max*100).toFixed(0)}%;background:${color}"></div></div><span class="dp">${it.v}</span></div>`;});
+}
+mkB('locB',[{l:'Bengaluru, India',p:16.9,v:'16.9%'},{l:'Delhi, India',p:8.5,v:'8.5%'},{l:'Hyderabad, India',p:4.8,v:'4.8%'},{l:'Mumbai, India',p:3.6,v:'3.6%'},{l:'New York, USA',p:3.2,v:'3.2%'},{l:'Chennai, India',p:2.7,v:'2.7%'},{l:'Kolkata, India',p:2.5,v:'2.5%'},{l:'Noida, India',p:2.4,v:'2.4%'},{l:'Dallas, USA',p:2.4,v:'2.4%'},{l:'Pune, India',p:2.0,v:'2.0%'}],TL);
+mkB('devB',[{l:'Desktop',p:57,v:'57%'},{l:'Mobile',p:43,v:'43%'}],BL);
+mkB('jobB',[{l:'Information Technology',p:6.4,v:'6.4%'},{l:'Others / Not specified',p:93.6,v:'93.6%'}],GD);
+mkB('ctryB',[{l:'United States',p:396,v:'396'},{l:'Singapore',p:144,v:'144'},{l:'India',p:130,v:'130'},{l:'China',p:122,v:'122'},{l:'Germany',p:53,v:'53'},{l:'Netherlands',p:31,v:'31'},{l:'Canada',p:19,v:'19'}],OR);
+mkB('pgB',[{l:'SAP Consulting Home',p:849,v:'849'},{l:'SAP TRM',p:203,v:'203'},{l:'Contact Us',p:143,v:'143'},{l:'About Noshtek',p:134,v:'134'},{l:'SAP FS-CD',p:67,v:'67'},{l:'Career',p:61,v:'61'},{l:'SAP BCM',p:33,v:'33'}],OR);
+</script>
+
+</body></html>
