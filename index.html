@@ -526,7 +526,7 @@ tr:hover td{background:var(--cardh)}
 </div><!-- /p-ga -->
 
 <footer class="rf">
-  <div class="rb"><strong>NOSHTEK CONSULTING</strong> &nbsp;·&nbsp; LinkedIn + Google Analytics &nbsp;·&nbsp; April 9, 2026 &nbsp;·&nbsp; All data sourced from live admin panels</div>
+  <div class="rb"><strong><a href="https://www.noshtek.com" target="_blank" style="color:var(--gold);text-decoration:none">NOSHTEK CONSULTING</a></strong> &nbsp;·&nbsp; LinkedIn + Google Analytics &nbsp;·&nbsp; April 9, 2026 &nbsp;·&nbsp; All data sourced from live admin panels &nbsp;·&nbsp; <a href="https://www.noshtek.com" target="_blank" style="color:var(--teal);text-decoration:none">www.noshtek.com</a></div>
   <div class="rtag">github.com/noshtek/analytics</div>
 </footer>
 </div><!-- /wrap -->
@@ -742,7 +742,7 @@ const gaGeoL=document.getElementById('gaGeoL');
 ctryL.forEach((l,i)=>{gaGeoL.innerHTML+=`<span class="lgi"><span class="ld" style="background:${ctryC[i]}"></span>${l} ${ctryV[i]}</span>`;});
 
 function mkB(id,items,color){
-  const el=document.getElementById(id);if(!el)return;
+  const el=document.getElementById(id);if(!el)return;el.innerHTML='';
   const max=Math.max(...items.map(i=>i.p));
   items.forEach(it=>{el.innerHTML+=`<div class="dr"><span class="dn_" title="${it.l}">${it.l}</span><div class="db"><div class="df" style="width:${(it.p/max*100).toFixed(0)}%;background:${color}"></div></div><span class="dp">${it.v}</span></div>`;});
 }
