@@ -194,39 +194,50 @@ tr:hover td{background:var(--cardh)}
 .rtag{font-size:.6rem;font-family:'DM Mono',monospace;color:var(--dim);background:rgba(255,255,255,.04);border:1px solid var(--bdr);padding:3px 9px;border-radius:4px}
 
 @media(max-width:700px){
+  .topnav{overflow-x:auto;overflow-y:hidden}
+  .nav-inner{padding:0 .5rem;flex-wrap:nowrap;min-width:0;width:100%}
+  .main-tabs{flex:1;min-width:0;overflow:hidden}
+  .mtab{padding:.7rem .8rem;font-size:.72rem;flex-shrink:0}
+  .nav-right{padding:.4rem;gap:4px;flex-shrink:0}
+  .tbtn{padding:4px 7px;font-size:.58rem}
+  .tbtn .tbs small{display:none}
+  .wrap{padding:0 .7rem 3rem;max-width:100%;overflow-x:hidden}
+  .panel,.sp{max-width:100%;overflow-x:hidden}
   .cr2,.ce,.dg,.ig{grid-template-columns:1fr}
   .kg{grid-template-columns:repeat(2,1fr)}
-  .sband{gap:.5rem;padding:.7rem .8rem;overflow-x:auto;flex-wrap:nowrap}
-  .si span:last-child{font-size:.82rem}
+  .sband{gap:.5rem;padding:.7rem .6rem;overflow-x:auto;flex-wrap:nowrap}
+  .si span:last-child{font-size:.8rem}
   .sdv{display:none}
-  .nav-inner{padding:0 .6rem;flex-wrap:wrap}
-  .main-tabs{flex:1;min-width:0}
-  .mtab{padding:.7rem .9rem;font-size:.75rem}
-  .nav-right{padding:.4rem;gap:5px;flex-wrap:wrap;justify-content:flex-end}
-  .tbtn{padding:5px 8px;font-size:.62rem}
-  .wrap{padding:0 .8rem 3rem}
   .ph{flex-direction:column;gap:.7rem}
   .ht h1{font-size:1.05rem}
-  .dn_{min-width:90px;font-size:.6rem}
+  .cc{padding:.8rem .7rem;max-width:100%;overflow:hidden}
+  .cc canvas{max-width:100%!important}
+  .dc{padding:.8rem .7rem;max-width:100%}
+  .dn_{min-width:80px;font-size:.6rem}
   .dr{gap:5px}
   .ic{flex-direction:column}
   .ib h4{font-size:.68rem}
   .ib p{font-size:.62rem}
-  .cc{padding:.9rem .8rem}
-  .dc{padding:.9rem .8rem}
-  .rb{font-size:.58rem;text-align:center}
-  table{min-width:480px}
+  .rb{font-size:.56rem;text-align:center}
+  table{min-width:420px}
+  .pw{overflow-x:auto;max-width:100%}
+  .rf{flex-direction:column;align-items:center}
 }
 @media(max-width:420px){
   .kg{grid-template-columns:1fr}
-  .mtab{padding:.6rem .7rem;font-size:.7rem;gap:5px}
-  .mtab svg{width:14px;height:14px}
-  .sband{padding:.6rem .6rem}
-  .si span:first-child{font-size:.52rem}
-  .si span:last-child{font-size:.72rem}
-  .ht h1{font-size:.92rem}
-  .ptag{font-size:.58rem;padding:3px 8px}
-  .dn_{min-width:70px}
+  .main-tabs{overflow-x:auto}
+  .mtab{padding:.5rem .6rem;font-size:.65rem;gap:4px}
+  .mtab svg{width:13px;height:13px}
+  .nav-right{gap:3px}
+  .tbtn{padding:3px 6px;font-size:.54rem}
+  .sband{padding:.5rem .5rem}
+  .si span:first-child{font-size:.5rem;letter-spacing:.04em}
+  .si span:last-child{font-size:.68rem}
+  .ht h1{font-size:.9rem}
+  .ptag{font-size:.55rem;padding:3px 7px}
+  .dn_{min-width:60px;font-size:.55rem}
+  .cc{padding:.6rem .5rem}
+  .dc{padding:.6rem .5rem}
 }
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
